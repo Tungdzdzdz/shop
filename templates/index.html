@@ -1,0 +1,106 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block main %}
+
+<script>
+    // Lấy giá trị tìm kiếm từ thanh input
+    var searchInput = document.getElementById('search-input');
+    var searchValue = searchInput.value;
+
+    // Chia các từ trong giá trị tìm kiếm thành mảng
+    var searchWords = searchValue.split(' ');
+
+    // Gán lại giá trị tìm kiếm vào thanh input sau khi tìm kiếm
+    searchInput.value = searchWords.join(' ');
+</script>
+
+<div class="container my-3 px-4 px-lg-5">
+    <div class="row">
+        <form class="d-block col-sm-7" style="margin-left: 15rem;" method = "GET" action = "{% url "search" %}">
+            {% comment %} {% csrf_token %} {% endcomment %}
+            <div class="input-group">
+                <input name="search" class="form-control" type="search" placeholder="Search" aria-label="Search" value="{{ request.GET.search }}" id="search-input">
+                <button class="btn btn-outline-success" type="submit">Search</button>
+            </div>
+        </form>
+    
+        <form class="d-block col-sm-2 ms-auto" style="margin-right: -3.6rem;" action = "{% url "cart" %}">
+            <button class="btn btn-outline-dark" type="submit">
+                <i class="bi-cart-fill me-1"></i>
+                Cart
+                <span class="badge bg-dark text-white ms-1 rounded-pill">{{order.getItem}}</span>
+            </button>
+        </form>
+    </div>
+</div>
+<!-- Header-->
+<header class="bg-dark py-5">
+    <div class="container px-4 px-lg-5 my-5">
+        <div class="text-center text-white">
+            <h1 class="display-4 fw-bolder">Homepage</h1>
+            <p class="lead fw-normal text-white-50 mb-0"></p>
+        </div>
+    </div>
+</header>
+<!-- Section-->
+<section class="py-5">
+    <div class="container px-4 px-lg-5 mt-5">
+        <div class="row gx-4 gx-lg-5 row-cols-2 row-cols-md-3 row-cols-xl-4 justify-content-center">
+            {% for product in page_obj %}
+            <div class="col mb-5">
+                <div class="card h-100">
+                    {% if product.sale %}
+                    <div class="badge bg-dark text-white position-absolute" style="top: 0.5rem; right: 0.5rem">Sale {{product.sale}}%</div>
+                    {% endif %}
+                    <!-- Product image-->
+                    <a style="height: 15rem;" href = "{% url "detail" %}?id={{product.id}}">
+                        <img class="card-img-top" src="{{product.image.url}}" alt="..."/>
+                    </a>
+                    <!-- Product details-->
+                    <div class="card-body p-4">
+                        <div class="text-center">
+                            <!-- Product name-->
+                            <a style="text-decoration: none;" href = "{% url "detail" %}?id={{product.id}}"><h5 class="fw-bolder">{{product.name}}</h5></a>
+                            {% if product.sale %}
+                            <span class="text-muted text-decoration-line-through">${{product.price}}</span>
+                            {% endif %}
+                            <!-- Product price-->
+                            ${{product.getSale}}
+                        </div>
+                    </div>
+                    <!-- Product actions-->
+                    <div class="card-footer p-4 pt-0 border-top-0 bg-transparent">
+                        <div class="text-center">
+                            <a class="btn btn-outline-dark mt-auto" href="{% url "addToCart" %}?productId={{product.id}}">Add to cart</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+<nav aria-label="Page navigation example">
+    <ul class="pagination justify-content-center">
+        {% if page_obj.paginator.num_pages > 1 %}
+        {% if page_obj.has_previous %}
+            <li class="page-item"><a class="page-link" href="?page=1&search={{request.GET.search}}">&laquo; First</a></li>
+            <li class="page-item"><a class="page-link" href="?page={{ page_obj.previous_page_number }}&search={{request.GET.search}}">Previous</a></li>
+        {% endif %}
+        
+        {% for page_num in page_obj.paginator.page_range %}
+            {% if page_num == page_obj.number %}
+                <li class="page-item active"><a class="page-link" href="?page={{ page_num }}&search={{request.GET.search}}">{{ page_num }}</a></li>
+            {% else %}
+                <li class="page-item"><a class="page-link" href="?page={{ page_num }}&search={{request.GET.search}}">{{ page_num }}</a></li>
+            {% endif %}
+        {% endfor %}
+        
+        {% if page_obj.has_next %}
+            <li class="page-item"><a class="page-link" href="?page={{ page_obj.next_page_number }}&search={{request.GET.search}}">Next</a></li>
+            <li class="page-item"><a class="page-link" href="?page={{ page_obj.paginator.num_pages }}&search={{request.GET.search}}">Last &raquo;</a></li>
+        {% endif %}
+        {% endif %}
+    </ul>
+</nav>
+{% endblock main %}

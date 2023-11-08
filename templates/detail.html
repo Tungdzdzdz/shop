@@ -1,0 +1,72 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block main %}
+<section class="py-5">
+    <div class="container px-4 px-lg-5 my-5">
+        <div class="row gx-4 gx-lg-5">
+            <div class="col-md-6" style="height: 30rem;">
+                <img class="card-img-top mb-5 mb-md-0" src="{{product.image.url}}" alt="..." />
+            </div>
+            <div class="col-md-6">
+                <h1 class="display-5 fw-bolder text-center mt-0">{{product.name}}</h1>
+                <div class="justify-content-center my-auto">
+                    <div class="display-6">
+                        Giá bán: 
+                        {% if product.sale %}
+                        <span class="text-muted text-decoration-line-through">${{product.price}}</span>
+                        {% endif %}
+                        <!-- Product price-->
+                        <spqn class="fw-bolder">${{product.getSale}}</spqn>
+                    </div>
+                    <p class="display-6">
+                        Đánh giá: 
+                        <spqn class="fw-bolder fs-3">{{product.description}}</spqn>
+                    </p>
+                </div>
+                <a href = "{% url "myshop" %}?id={{product.sellerId.id}}"> Shop: {{product.sellerId }}</a>
+                <div class="d-flex justify-content-center">
+                    <a class="btn btn-outline-dark mt-auto" href="{% url "addToCart" %}?productId={{product.id}}">Add to cart</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- Related items section-->
+<section class="py-5 bg-light">
+    <div class="container px-4 px-lg-5 mt-5">
+        <h2 class="fw-bolder mb-4">Hot products</h2>
+        <div class="row gx-4 gx-lg-5 row-cols-2 row-cols-md-3 row-cols-xl-4 justify-content-center">
+            {% for product in hotProducts %}
+             <div class="col mb-5">
+                 <div class="card h-100">
+                     {% if product.sale %}
+                     <div class="badge bg-dark text-white position-absolute" style="top: 0.5rem; right: 0.5rem">Sale {{product.sale}}%</div>
+                     {% endif %}
+                     <!-- Product image-->
+                     <a style="height: 15rem;" href = "{% url "detail" %}?id={{product.id}}">
+                        <img class="card-img-top" src="{{product.image.url}}" alt="..."/>
+                     </a>
+                     <!-- Product details-->
+                     <div class="card-body p-4">
+                         <div class="text-center">
+                             <!-- Product name-->
+                             <a style="text-decoration: none;" href = "{% url "detail" %}?id={{product.id}}"><h5 class="fw-bolder">{{product.name}}</h5></a>
+                             {% if product.sale %}
+                             <span class="text-muted text-decoration-line-through">${{product.price}}</span>
+                             {% endif %}
+                             <!-- Product price-->
+                             ${{product.getSale}}
+                         </div>
+                     </div>
+                     <!-- Product actions-->
+                     <div class="card-footer p-4 pt-0 border-top-0 bg-transparent">
+                         <div class="text-center">
+                            <a class="btn btn-outline-dark mt-auto" href="{% url "addToCart" %}?productId={{product.id}}">Add to cart</a></div>
+                     </div>
+                 </div>
+             </div>
+            {% endfor %}
+         </div>     
+    </div>
+</section>
+{% endblock main %}

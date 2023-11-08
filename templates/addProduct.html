@@ -1,0 +1,95 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block main %}
+<div class="container">
+    <div class="table-wrapper">
+        <div class="table-title">
+            <div class="row">
+                <div class="col-sm-6">
+                    <h2>Add <b>Product</b></h2>
+                </div>
+                <div class="col-sm-6">
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="editEmployeeModal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <form action="{% url "addProduct" %}?productId={{product.id}}" method="POST" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <div class="modal-body">					
+                        <div class="form-group">
+                            <label>Name</label>
+                            <input value="{{name}}" name="name" type="text" class="form-control" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Image</label>
+                            <input type="file" name="image" accept="image/*" class="form-control" required>
+                        
+                        </div>
+                        <div class="form-group">
+                            <label>Price</label>
+                            {% if message1 %}
+                                <i style="color: red;">*{{message1}}</i>
+                            {% endif %}
+                            <input value="{{price}}" name="price" type="text" class="form-control" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Sale</label>
+                            {% if message2 %}
+                                <i style="color: red;">*{{message2}}</i>
+                            {% endif %}
+                            <input value="{{sale}}" name="sale" type="text" class="form-control" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Description</label>
+                            <input value="{{description}}" name="description" type="text" class="form-control">
+                        </div>
+                        <div class="form-group">
+                            <label>Category</label>
+                            <select name="category" class="form-select" aria-label="Default select example">
+                                {% for category in categories %}
+                                    {% if category1 == category %}
+                                    <option selected value={{category.id}}>{{category.name}}</option>
+                                    {% else %}
+                                    <option value={{category.id}}>{{category.name}}</option>
+                                    {% endif %}
+                                {% endfor %}
+                                <option value="new_category">Add New Category</option>
+                            </select>
+                        </div>
+                        <div id="new-category-container" style="display: none;">
+                            <label>New Category</label>
+                            <input type="text" name="new_category" class="form-control">
+                        </div>
+                        <div class="form-group">
+                            <label>Sizes</label>
+                            <input value="{{sizes}}" name="sizes" type="text" class="form-control">
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <input type="submit" class="btn btn-success" value="Add">
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+</div>
+<script>
+    const selectElement = document.querySelector('select[name="category"]');
+    const newCategoryContainer = document.querySelector('#new-category-container');
+    const newCategoryInput = document.querySelector('input[name="new_category"]');
+    
+    selectElement.addEventListener('change', function() {
+        if (this.value === 'new_category') {
+        newCategoryContainer.style.display = 'block';
+        newCategoryInput.required = true;
+        } else {
+        newCategoryContainer.style.display = 'none';
+        newCategoryInput.required = false;
+        }
+    });
+</script>
+{% endblock main %}
