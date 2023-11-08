@@ -56,7 +56,6 @@ prometheus-client==0.14.1
 prompt-toolkit==3.0.30
 psutil==5.9.1
 pure-eval==0.2.2
-PyAudio==0.2.12
 pycparser==2.21
 Pygments==2.13.0
 pylab-sdk==1.3.2
